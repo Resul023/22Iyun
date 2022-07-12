@@ -57,6 +57,7 @@ namespace Pustok.Controllers
             }
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
             string url = Url.Action("ConfirmEmail", "Account", new { email = newUser.Email, token = token }, Request.Scheme);
+
             await _userManager.AddToRoleAsync(newUser, "Member");
 
             return Ok(new { Url = url });

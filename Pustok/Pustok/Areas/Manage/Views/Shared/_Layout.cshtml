@@ -2,10 +2,14 @@
 @inject UserManager<AppUser> _userManager
 @{ 
     AppUser logged = null;
-            if (User.Identity.IsAuthenticated)
-            {
-                logged = await _userManager.FindByNameAsync(User.Identity.Name);
-            }
+
+    if (User.Identity.IsAuthenticated)
+    {
+        logged = await _userManager.FindByNameAsync(User.Identity.Name);
+
+
+    }
+    IList<string> loggedRole = await _userManager.GetRolesAsync(logged);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -56,8 +60,12 @@
                     <span>Slider</span>
                 </a>
             </li>
+            <li>
+
+                <p></p>
 
 
+            </li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Genre" asp-action="Index">
                     <i class="fas fa-fw fa-table"></i>
@@ -87,12 +95,17 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="CreateAdmin" asp-action="Index">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Create Admin</span>
-                </a>
-            </li>
+            @if (loggedRole.Any(x => x == "SuperAdmin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="CreateAdmin" asp-action="Index">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Create Admin</span>
+                    </a>
+                </li>
+            }
+
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -294,6 +307,7 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
+                            
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">@logged?.FullName</span>
